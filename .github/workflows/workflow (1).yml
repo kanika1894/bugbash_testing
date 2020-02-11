@@ -16,8 +16,8 @@ jobs:
     - uses: azure/docker-login@v1
       with:
         login-server: kapasrijkubacr.azurecr.io
-        username: ${{ secrets.kpjavakubernetes_99ed4_username }}
-        password: ${{ secrets.kpjavakubernetes_99ed4_password }}
+        username: ${{ secrets.kpjavakubernetes_b6c0c_username }}
+        password: ${{ secrets.kpjavakubernetes_b6c0c_password }}
     
     - name: Build and push image to ACR
       id: build-image
@@ -27,7 +27,7 @@ jobs:
     
     - uses: azure/k8s-set-context@v1
       with:
-         kubeconfig: ${{ secrets.kpjavakubernetes_99ed4  }}
+         kubeconfig: ${{ secrets.kpjavakubernetes_b6c0c }}
       id: login
     
     - name: Create namespace
@@ -42,8 +42,8 @@ jobs:
       with:
         namespace: kpjavakubernetes1
         container-registry-url: kapasrijkubacr.azurecr.io
-        container-registry-username: ${{ secrets.kpjavakubernetes_99ed4_username }}
-        container-registry-password: ${{ secrets.kpjavakubernetes_99ed4_password }}
+        container-registry-username: ${{ secrets.kpjavakubernetes_b6c0c_username }}
+        container-registry-password: ${{ secrets.kpjavakubernetes_b6c0c_password }}
         secret-name: kpjavakubernetesdockerauth1
        
     - name: Generate Kubernetes Manifest file
