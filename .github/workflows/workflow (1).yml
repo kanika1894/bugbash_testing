@@ -55,7 +55,7 @@ jobs:
       with:
         namespace: kpjavakubernetes1
         manifests: |
-          manifest01.yml }}}
+          manifest01.yml
         images: |
           kapasrijkubacr.azurecr.io/kpjavakubernetes1:abc
         imagepullsecrets: |
