@@ -42,8 +42,8 @@ jobs:
       with:
         namespace: kpjavakubernetes1
         container-registry-url: kapasrijkubacr.azurecr.io
-        container-registry-username: ${{ secrets.kpjavakubernetes_b6c0c_username }}
-        container-registry-password: ${{ secrets.kpjavakubernetes_b6c0c_password }}
+        container-registry-username: kapasrijkubacr
+        container-registry-password: s+Hpaz1jpJFcwmq647n+IpLepCicg4G3
         secret-name: kpjavakubernetesdockerauth1
        
     - name: Generate Kubernetes Manifest file
