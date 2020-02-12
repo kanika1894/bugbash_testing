@@ -16,8 +16,8 @@ jobs:
     - uses: azure/docker-login@v1
       with:
         login-server: kapasrijkubacr.azurecr.io
-        username: ${{ secrets.kpjavakubernetes_b6c0c_username }}
-        password: ${{ secrets.kpjavakubernetes_b6c0c_password }}
+        username: kapasrijkubacr
+        password: s+Hpaz1jpJFcwmq647n+IpLepCicg4G3
     
     - name: Build and push image to ACR
       id: build-image
@@ -42,20 +42,20 @@ jobs:
       with:
         namespace: kpjavakubernetes1
         container-registry-url: kapasrijkubacr.azurecr.io
-        container-registry-username: ${{ secrets.kpjavakubernetes_b6c0c_username }}
-        container-registry-password: ${{ secrets.kpjavakubernetes_b6c0c_password }}
+        container-registry-username: kapasrijkubacr
+        container-registry-password: s+Hpaz1jpJFcwmq647n+IpLepCicg4G3
         secret-name: kpjavakubernetesdockerauth1
        
     - name: Generate Kubernetes Manifest file
       id: manifest-creation
       run: |
-        echo -e "apiVersion: apps/v1beta1\nkind: Deployment\nmetadata:\n    name: $APP_NAME\nspec:\n    replicas: 2\n    template:\n        metadata:\n            labels: {app: $APP_NAME}\n        spec:\n            containers: [{name: $APP_NAME, image: $REGISTRY_URL/$IMAGE_NAME, ports: null}, {containerPort: 8080}]\napiVersion: v1\nkind: Service\nmetadata:\n    name: $APP_NAME\n    labels:\n        app: $APP_NAME\nspec:\n    type: LoadBalancer\n    ports:\n        - port: 8080\n            targetPort: http\n            protocol: TCP\n            name: http\n    selector:\n        app: $APP_NAME" > manifest00_.yml
-        
+        echo -e "apiVersion: apps/v1beta1\nkind: Deployment\nmetadata:\n    name: $APP_NAME\nspec:\n    replicas: 2\n    template:\n        metadata:\n            labels: {app: $APP_NAME}\n        spec:\n            containers: [{name: $APP_NAME, image: $REGISTRY_URL/$IMAGE_NAME, ports: null}, {containerPort: 8080}]\napiVersion: v1\nkind: Service\nmetadata:\n    name: $APP_NAME\n    labels:\n        app: $APP_NAME\nspec:\n    type: LoadBalancer\n    ports:\n        - port: 8080\n            targetPort: http\n            protocol: TCP\n            name: http\n    selector:\n        app: $APP_NAME" > manifest01.yml
+        cat manifest01.yml
     - uses: azure/k8s-deploy@v1
       with:
         namespace: kpjavakubernetes1
         manifests: |
-          manifest00.yml }}}
+          manifest01.yml
         images: |
           kapasrijkubacr.azurecr.io/kpjavakubernetes1:abc
         imagepullsecrets: |
