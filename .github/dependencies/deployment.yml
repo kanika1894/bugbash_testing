@@ -1,23 +1,16 @@
-env:
-  REGISTRY_URL: kapasrijkubacr.azurecr.io
-  SERVICE_NAME: kpjavakubernetes
-  NAMESPACE: kpjavakubernetes
-  IMAGE_NAME: kpjavakubernetes
-  APP_NAME: kpjavakubernetes
-  SECRET_NAME: kpjavakubernetesdockerauth
 apiVersion : apps/v1beta1
 kind: Deployment
 metadata:
-  name: "$APP_NAME"
+  name: kpjavakubernetes
 spec:
   replicas: 2
   template:
     metadata:
       labels:
-        app: "$APP_NAME"
+        app: kpjavakubernetes
     spec:
       containers:
-        - name: "$APP_NAME"
-          image: "$REGISTRY_URL/$IMAGE_NAME"
+        - name: kpjavakubernetes"
+          image: kapasrijkubacr.azurecr.io/kpjavakubernetes
           ports:
           - containerPort: 8080
