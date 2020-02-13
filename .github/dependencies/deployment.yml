@@ -1,3 +1,10 @@
+env:
+  REGISTRY_URL: kapasrijkubacr.azurecr.io
+  SERVICE_NAME: kpjavakubernetes
+  NAMESPACE: kpjavakubernetes
+  IMAGE_NAME: kpjavakubernetes
+  APP_NAME: kpjavakubernetes
+  SECRET_NAME: kpjavakubernetesdockerauth
 apiVersion : apps/v1beta1
 kind: Deployment
 metadata:
