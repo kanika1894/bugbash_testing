@@ -50,8 +50,8 @@ jobs:
       with:
         namespace: kpjavakubernetes
         manifests: |
-          deployment.yml
-          serviceFile.yml
+          /dependencies/deployment.yml
+          /dependencies/serviceFile.yml
 
         images: |
           kapasrijkubacr.azurecr.io/kpjavakubernetes:${{ github.sha }}
