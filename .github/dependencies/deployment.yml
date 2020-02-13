@@ -10,7 +10,7 @@ spec:
         app: kpjavakubernetes
     spec:
       containers:
-        - name: kpjavakubernetes"
+        - name: kpjavakubernetes
           image: kapasrijkubacr.azurecr.io/kpjavakubernetes
           ports:
           - containerPort: 8080
