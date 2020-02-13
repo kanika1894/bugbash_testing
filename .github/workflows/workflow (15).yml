@@ -1,0 +1,59 @@
+on: [push]
+jobs:
+  build-and-deploy:
+    env:
+      REGISTRY_URL: kapasrijkubacr.azurecr.io
+      SERVICE_NAME: kpjavakubernetes
+      NAMESPACE: kpjavakubernetes
+      IMAGE_NAME: kpjavakubernetes
+      APP_NAME: kpjavakubernetes
+      SECRET_NAME: kpjavakubernetesdockerauth
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - uses: azure/docker-login@v1
+      with:
+        login-server: kapasrijkubacr.azurecr.io
+        username: ${{ secrets. }} #
+        password: ${{ secrets. }} #
+    
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/node/plain/container/Application" -f  "node/plain/container/Application/Dockerfile" -t  $REGISTRY_URL/$IMAGE_NAME:${{ github.sha }}
+        docker push $REGISTRY_URL/$IMAGE_NAME:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.kpjavakubernetes_9f4a6 }} #$ }}
+      id: login
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep $NAMESPACE | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace $NAMESPACE`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: kpjavakubernetes
+        container-registry-url: $REGISTRY_URL
+        container-registry-username: ${{ secrets. }}
+        container-registry-password: ${{ secrets. }}
+        secret-name: $SECRET_NAME
+       
+    - uses: azure/k8s-deploy@v1
+      with:
+        namespace: kpjavakubernetes
+        manifests: |
+          deployment.yml
+          serviceFile.yml
+
+        images: |
+          kapasrijkubacr.azurecr.io/kpjavakubernetes:${{ github.sha }}
+        imagepullsecrets: |
+          dockerauth
