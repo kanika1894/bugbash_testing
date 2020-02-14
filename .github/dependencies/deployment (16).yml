@@ -1,16 +1,16 @@
 apiVersion : apps/v1beta1
 kind: Deployment
 metadata:
-  name: bugbash1621
+  name: bugbash1621-a0a5
 spec:
   replicas: 2
   template:
     metadata:
       labels:
-        app: bugbash1621
+        app: bugbash1621-a0a5
     spec:
       containers:
-        - name: bugbash1621
-          image: kapasrijkubacr.azurecr.io/bugbash162-18a9a
+        - name: bugbash1621-a0a5
+          image: kapasrijkubacr.azurecr.io/bugbash1621bbe8
           ports:
           - containerPort: 8080
