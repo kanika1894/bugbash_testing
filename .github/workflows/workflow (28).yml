@@ -22,41 +22,41 @@ jobs:
         username: ${{ secrets.kapasrijkubacr_3ede4_username }}   
         password: ${{ secrets.kapasrijkubacr_3ede4_password }} 
     
-#     - name: Build and push image to ACR
-#       id: build-image
-#       run: |
-#         docker build "$GITHUB_WORKSPACE/node/plain/container/Application" -f  "node/plain/container/Application/Dockerfile" -t  $REGISTRY_URL/$IMAGE_NAME:${{ github.sha }}
-#         docker push $REGISTRY_URL/$IMAGE_NAME:${{ github.sha }}
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/node/plain/container/Application" -f  "node/plain/container/Application/Dockerfile" -t  $REGISTRY_URL/$IMAGE_NAME:${{ github.sha }}
+        docker push $REGISTRY_URL/$IMAGE_NAME:${{ github.sha }}
     
-#     - uses: azure/k8s-set-context@v1
-#       with:
-#          kubeconfig: ${{ secrets.bugbash1621_3ede4 }} 
-#       id: login
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.bugbash1621_3ede4 }} 
+      id: login
     
-#     - name: Create namespace
-#       run: |
-#         namespacePresent=`kubectl get namespace | grep $NAMESPACE | wc -l`
-#         if [ $namespacePresent -eq 0 ]
-#         then
-#             echo `kubectl create namespace $NAMESPACE`
-#         fi
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep $NAMESPACE | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace $NAMESPACE`
+        fi
 
-#     - uses: azure/k8s-create-secret@v1
-#       with:
-#         namespace: bugbash16219c03
-#         container-registry-url: kapasrijkubacr.azurecr.io
-#         container-registry-username: ${{ secrets.kapasrijkubacr_3ede4_username }}
-#         container-registry-password: ${{ secrets.kapasrijkubacr_3ede4_password }}
-#         secret-name: bugbash1621dockerauth
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: ${{ env.NAMESPACE }}
+        container-registry-url: ${{ env.REGISTRY_URL }}
+        container-registry-username: ${{ secrets.kapasrijkubacr_3ede4_username }}
+        container-registry-password: ${{ secrets.kapasrijkubacr_3ede4_password }}
+        secret-name: ${{ env.SECRET_NAME }
        
-#     - uses: azure/k8s-deploy@v1
-#       with:
-#         namespace: bugbash16219c03
-#         manifests: |
-#           .github/dependencies/deployment (16).yml
-#           .github/dependencies/service (9).yml
+    - uses: azure/k8s-deploy@v1
+      with:
+        namespace: ${{ env.NAMESPACE }}
+        manifests: |
+          .github/dependencies/deployment (16).yml
+          .github/dependencies/service (9).yml
 
-#         images: |
-#           kapasrijkubacr.azurecr.io/bugbash1621bbe8:${{ github.sha }}
-#         imagepullsecrets: |
-#           bugbash1621dockerauth
+        images: |
+          ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        imagepullsecrets: |
+          ${{ env.SECRET_NAME }
