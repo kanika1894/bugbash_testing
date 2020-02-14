@@ -53,8 +53,8 @@ jobs:
       with:
         namespace: bugbash16219c03
         manifests: |
-          deployment.yml
-          serviceFile.yml
+          .github/dependencies/deployment (16).yml
+          .github/dependencies/service (9).yml
 
         images: |
           kapasrijkubacr.azurecr.io/bugbash1621bbe8:${{ github.sha }}
