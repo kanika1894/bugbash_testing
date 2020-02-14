@@ -1,0 +1,62 @@
+on: [push]
+jobs:
+  build-and-deploy:
+    env:
+      REGISTRY_URL: kapasrijkubacr.azurecr.io
+      SERVICE_NAME: bugbash1621
+      NAMESPACE: bugbash16219c03
+      IMAGE_NAME: bugbash1621bbe8
+      APP_NAME: bugbash1621-a0a5 
+      SECRET_NAME: bugbash1621dockerauth
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - run: echo ::set-output name=with_tiny_guid::bugbash1621a2c5
+      id: set-variable
+
+    - uses: azure/docker-login@v1
+      with:
+        login-server: kapasrijkubacr.azurecr.io
+        username: ${{ secrets.kapasrijkubacr_3ede4_username }}   
+        password: ${{ secrets.kapasrijkubacr_3ede4_password }} 
+    
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/node/plain/container/Application" -f  "node/plain/container/Application/Dockerfile" -t  $REGISTRY_URL/$IMAGE_NAME:${{ github.sha }}
+        docker push $REGISTRY_URL/$IMAGE_NAME:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.bugbash1621_3ede4 }} 
+      id: login
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep $NAMESPACE | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace $NAMESPACE`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: bugbash16219c03
+        container-registry-url: kapasrijkubacr.azurecr.io
+        container-registry-username: ${{ secrets.kapasrijkubacr_3ede4_username }}
+        container-registry-password: ${{ secrets.kapasrijkubacr_3ede4_password }}
+        secret-name: bugbash1621dockerauth
+       
+    - uses: azure/k8s-deploy@v1
+      with:
+        namespace: bugbash16219c03
+        manifests: |
+          deployment.yml
+          serviceFile.yml
+
+        images: |
+          kapasrijkubacr.azurecr.io/bugbash1621bbe8:${{ github.sha }}
+        imagepullsecrets: |
+          bugbash1621dockerauth
