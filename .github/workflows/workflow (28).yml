@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     
-    - run: echo ::set-output name=with_tiny_guid::$REGISTRY_URL
+    - run: echo ::set-output name=with_tiny_guid::kapasrijkubacr.azurecr.io
       id: set-variable
 
     - uses: azure/docker-login@v1
