@@ -1,16 +1,16 @@
 apiVersion : apps/v1beta1
 kind: Deployment
 metadata:
-  name: kpjavakubernetes
+  name: bugbash1621-a023
 spec:
   replicas: 2
   template:
     metadata:
       labels:
-        app: kpjavakubernetes
+        app: bugbash1621-a023
     spec:
       containers:
-        - name: kpjavakubernetes
-          image: kapasrijkubacr.azurecr.io/kpjavakubernetes
+        - name: bugbash1621-a023
+          image: kapasrijkubacr.azurecr.io/bugbash1621ace1
           ports:
           - containerPort: 8080
