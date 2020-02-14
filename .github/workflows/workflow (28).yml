@@ -47,7 +47,7 @@ jobs:
         container-registry-url: ${{ env.REGISTRY_URL }}
         container-registry-username: ${{ secrets.kapasrijkubacr_3ede4_username }}
         container-registry-password: ${{ secrets.kapasrijkubacr_3ede4_password }}
-        secret-name: ${{ env.SECRET_NAME }
+        secret-name: ${{ env.SECRET_NAME }}
        
     - uses: azure/k8s-deploy@v1
       with:
@@ -59,4 +59,4 @@ jobs:
         images: |
           ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
         imagepullsecrets: |
-          ${{ env.SECRET_NAME }
+          ${{ env.SECRET_NAME }}
