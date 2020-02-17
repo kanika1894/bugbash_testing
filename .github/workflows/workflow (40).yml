@@ -48,8 +48,8 @@ jobs:
       with:
         namespace: ${{ env.REGISTRY_URL }}
         manifests: |
-          dependencies\manifests\deployment (2).yml
-          dependencies\manifests\service (2).yml
+          dependencies/manifests/deployment (2).yml
+          dependencies/manifests/service (2).yml
 
         images: |
           ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME  }}:${{ github.sha }}
