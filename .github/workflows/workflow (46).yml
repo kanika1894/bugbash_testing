@@ -1,0 +1,58 @@
+on: [push]
+jobs:
+  build-and-deploy:
+    env:
+      REGISTRY_URL: kapasrijkubacr.azurecr.io
+      NAMESPACE: vscodebugbash28706
+      IMAGE_NAME: vscodebugbash2
+      SECRET_NAME: vscodebugbash2
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+
+    - uses: azure/docker-login@v1
+      with:
+        login-server: ${{ env.REGISTRY_URL }}
+        username: ${{ secrets.kapasrijkubacr_2a9d5_username }} 
+        password: ${{ secrets.kapasrijkubacr_2a9d5_password }}
+    
+    - name: Build and push image to ACR
+      id: build-image
+      run: |
+        docker build "$GITHUB_WORKSPACE/php/plain/container/Application" -f  "php/plain/container/Application/Dockerfile" -t  $REGISTRY_URL/$IMAGE_NAME:${{ github.sha }}
+        docker push $REGISTRY_URL/$IMAGE_NAME:${{ github.sha }}
+    
+    - uses: azure/k8s-set-context@v1
+      with:
+         kubeconfig: ${{ secrets.vscodebugbash2_2a9d5 }} 
+      id: login
+    
+    - name: Create namespace
+      run: |
+        namespacePresent=`kubectl get namespace | grep $NAMESPACE | wc -l`
+        if [ $namespacePresent -eq 0 ]
+        then
+            echo `kubectl create namespace $NAMESPACE`
+        fi
+
+    - uses: azure/k8s-create-secret@v1
+      with:
+        namespace: ${{ env.NAMESPACE  }}
+        container-registry-url: ${{ env.REGISTRY_URL }}
+        container-registry-username: ${{ secrets.kapasrijkubacr_2a9d5_username }}
+        container-registry-password: ${{ secrets.kapasrijkubacr_2a9d5_password }}
+        secret-name: ${{ env.SECRET_NAME  }}
+       
+    - uses: azure/k8s-deploy@v1
+      with:
+        namespace: ${{ env.NAMESPACE  }}
+        manifests: |
+          php/plain/container/Application/manifests/deployment.yml
+          php/plain/container/Application/manifests/service.yml
+          php/plain/container/Application/manifests/ingress.yml
+
+        images: |
+          ${{ env.REGISTRY_URL }}/${{ env.IMAGE_NAME  }}:${{ github.sha }}
+        imagepullsecrets: |
+          ${{ env.SECRET_NAME  }}
